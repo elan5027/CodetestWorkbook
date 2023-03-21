@@ -17,7 +17,13 @@ test6_dumy2 = [[0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [
 test6_dumy3 = [[1, 1, 1, 1, 1, 1], [1, 1, 1, 1, 1, 1], [1, 1, 1, 1, 1, 1], [
     1, 1, 1, 1, 1, 1], [1, 1, 1, 1, 1, 1], [1, 1, 1, 1, 1, 1]]
 
-test6_dumy4 = [[0, 0, 0], [0, 0, 0], [1, 0, 0]]
+test6_dumy4 = [[1, 0, 0], [0, 0, 0], [0, 0, 0]]
+test6_dumy5 = [[0, 0, 1], [0, 0, 0], [0, 0, 0]]
+test6_dumy6 = [[0, 0, 0], [1, 0, 0], [0, 0, 0]]
+test6_dumy7 = [[0, 0, 0], [0, 0, 1], [0, 0, 0]]
+test6_dumy8 = [[0, 0, 0], [0, 0, 0], [1, 0, 0]]
+test6_dumy9 = [[0, 0, 0], [0, 0, 0], [0, 0, 1]]
+test6_dumy10 = [[0, 0, 0], [0, 1, 0], [0, 0, 0]]
 
 # 프로그레머스 코테
 # 파이썬3, 레벨0, 정답률 29%
@@ -202,8 +208,43 @@ def test6(board):
             else:
                 boardplus[column][row] = 2
     for i in boardplus:
+        print(i)
         for j in range(0, len(boardplus)):
             if i[j] == 0:
+                answer += 1
+    return answer
+
+
+def test6_1(board):
+    answer = 0
+    bomb = []
+
+    for i, boad in enumerate(board):
+        for j in range(0, len(board)):
+            if (boad[j] == 1):
+                bomb.append([i, j])
+
+    bomblen = (len(bomb))  # 폭탄의 갯수저장.
+    for column in range(len(board)):
+        for row in range(len(board)):
+            for i in range(0, bomblen):
+                if bomb[i] == [column, row]:
+                    for num in range(-1, 2):
+                        numCol = (column+num) if (column +
+                                                  num) >= 0 and (column+num) < len(board) else column
+                        numRow = (row+num) if (row+num) >= 0 and (row +
+                                                                  num) < len(board) else row
+                        onumCol = (column-num) if (column -
+                                                   num) >= 0 and (column-num) < len(board)else column
+                        board[numCol][row] = 2  # 위아래
+                        board[numCol][numRow] = 3  # 좌상 우하
+                        board[column][numRow] = 4  # 좌우
+                        board[onumCol][numRow] = 5  # 좌하 우상
+
+    for i in board:
+        print(i)
+        for j in range(0, len(board)):
+            if (i[j] == 0):
                 answer += 1
     return answer
 
@@ -213,4 +254,6 @@ def test6(board):
 # 지뢰가 매설된 지도가 매개변수로 주어질때 안전한 지억의 칸수를 반환.
 
 
-# print(test6(test6_dumy2))
+# print(test6_1(test6_dumy6))
+# print("===============")
+# print(test6(test6_dumy8))
