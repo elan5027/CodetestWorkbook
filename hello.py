@@ -1,6 +1,7 @@
 import itertools
 import pandas as pd
 import pprint
+import numpy as np
 
 test1_dumy = ["ayaye", "ayaye", "uuuma", "ye", "yemawoo", "ayaa"]
 test3_dumy = [1, 3, 2, 4, 2, 1, 2, 3, 4, 5, 1, 2,
@@ -18,7 +19,7 @@ test6_dumy3 = [[1, 1, 1, 1, 1, 1], [1, 1, 1, 1, 1, 1], [1, 1, 1, 1, 1, 1], [
     1, 1, 1, 1, 1, 1], [1, 1, 1, 1, 1, 1], [1, 1, 1, 1, 1, 1]]
 
 test6_dumy4 = [[1, 0, 0], [0, 0, 0], [0, 0, 0]]
-test6_dumy5 = [[0, 0, 1], [0, 0, 0], [0, 0, 0]]
+test6_dumy5 = [[0, 1, 1], [0, 0, 0], [0, 0, 0]]
 test6_dumy6 = [[0, 0, 0], [1, 0, 0], [0, 0, 0]]
 test6_dumy7 = [[0, 0, 0], [0, 0, 1], [0, 0, 0]]
 test6_dumy8 = [[0, 0, 0], [0, 0, 0], [1, 0, 0]]
@@ -254,6 +255,23 @@ def test6_1(board):
 # 지뢰가 매설된 지도가 매개변수로 주어질때 안전한 지억의 칸수를 반환.
 
 
+def test6_2(board):
+    board = np.array(board)
+    rows, cols = np.where(board == 1)
+
+    for r, c in zip(rows, cols):
+        if r-1 >= 0 and c-1 >= 0:
+            board[r-1:r+2, c-1:c+2] = 1
+        if r-1 < 0:
+            board[r:r+2, c-1:c+2] = 1
+        if c-1 < 0:
+            board[r-1:r+2, c:c+2] = 1
+    pprint.pprint(board)
+    return len(board[board == 0])
+# 넘파이를 활용한 방법.
+
+
 # print(test6_1(test6_dumy6))
 # print("===============")
 # print(test6(test6_dumy8))
+print(test6_2(test6_dumy10))
