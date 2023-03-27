@@ -120,6 +120,7 @@ print(test4(test4_dumy2))
 
 def test4_1(dots):
     arr = []
+    answer = 0
     for i in range(0, 3):
         for j in range(1+i, 4):
             x = dots[i][0]-dots[j][0]
@@ -177,43 +178,43 @@ def test5(lines):
 # 프로그레머스 코테
 # 파이썬3, 레벨0, 정답률 55%
 # 안전지대  https://school.programmers.co.kr/learn/courses/30/lessons/120866
-def test6(board):
-    answer = 0
-    bomb = []
+# def test6(board):
+#     answer = 0
+#     bomb = []
 
-    # 보드 공간 좌우 1칸씩 총 2칸 늘린 공간 만들기
-    boardplus = [[""]*(len(board)+2) for i in range(len(board)+2)]
+#     # 보드 공간 좌우 1칸씩 총 2칸 늘린 공간 만들기
+#     boardplus = [[""]*(len(board)+2) for i in range(len(board)+2)]
 
-    for column in range(len(boardplus)):  # 세로값
-        for row in range(len(boardplus)):  # 가로값
-            if 1 <= column <= len(board) and 1 <= row <= len(board):
-                boardplus[column][row] = board[column-1][row-1]
-            else:
-                boardplus[column][row] = 2
+#     for column in range(len(boardplus)):  # 세로값
+#         for row in range(len(boardplus)):  # 가로값
+#             if 1 <= column <= len(board) and 1 <= row <= len(board):
+#                 boardplus[column][row] = board[column-1][row-1]
+#             else:
+#                 boardplus[column][row] = 2
 
-            if boardplus[column][row] == 1:
-                bomb.append([column, row])
-    # 기존에 값 복사 붙여넣기하고 추가된 구역은 2로 채워넣기.
-    # 붙여넣은 값중에 진짜 폭탄이 있던 1의 위치를 x에 기억시키기.
-    bomblen = (len(bomb))  # 폭탄의 갯수저장.
-    for column in range(len(boardplus)):
-        for row in range(len(boardplus)):
-            if 1 <= column <= len(board) and 1 <= row <= len(board):
-                for i in range(0, bomblen):
-                    if bomb[i] == [column, row]:
-                        for num in range(-1, 2):
-                            boardplus[column+num][row+num] = 1
-                            boardplus[column+num][row] = 1
-                            boardplus[column][row+num] = 1
-                            boardplus[column-num][row+num] = 1
-            else:
-                boardplus[column][row] = 2
-    for i in boardplus:
-        print(i)
-        for j in range(0, len(boardplus)):
-            if i[j] == 0:
-                answer += 1
-    return answer
+#             if boardplus[column][row] == 1:
+#                 bomb.append([column, row])
+#     # 기존에 값 복사 붙여넣기하고 추가된 구역은 2로 채워넣기.
+#     # 붙여넣은 값중에 진짜 폭탄이 있던 1의 위치를 x에 기억시키기.
+#     bomblen = (len(bomb))  # 폭탄의 갯수저장.
+#     for column in range(len(boardplus)):
+#         for row in range(len(boardplus)):
+#             if 1 <= column <= len(board) and 1 <= row <= len(board):
+#                 for i in range(0, bomblen):
+#                     if bomb[i] == [column, row]:
+#                         for num in range(-1, 2):
+#                             boardplus[column+num][row+num] = 1
+#                             boardplus[column+num][row] = 1
+#                             boardplus[column][row+num] = 1
+#                             boardplus[column-num][row+num] = 1
+#             else:
+#                 boardplus[column][row] = 2
+#     for i in boardplus:
+#         print(i)
+#         for j in range(0, len(boardplus)):
+#             if i[j] == 0:
+#                 answer += 1
+#     return answer
 
 
 def test6_1(board):

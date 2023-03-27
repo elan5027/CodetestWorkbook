@@ -202,11 +202,12 @@ def test09(n):
 # 정수 제곱근 판별  https://school.programmers.co.kr/learn/courses/30/lessons/12934
 # math.sqrt 를 사용안하고 알고리즘을 해결보자는 취지에서 구현.
 
-def test10(n):
+def test10__1(n):
     answer = n ** 0.5
     if int(answer) % (answer):
         return -1
     return (answer+1) ** 2
+# test10(10)
 
 
 def test10_1(n):
@@ -480,8 +481,7 @@ def test20(sizes):
         hight = max(hight, h)
 
     # 3번 위 2개 방법을 구현후 다른사람이  작성한 코드 중 가장 인상깊었던 것.
-    row = max(max(x) for x in sizes) * max(min(x) for x in sizes)
-    print(row, row2)
+    # row = max(max(x) for x in sizes) * max(min(x) for x in sizes)
     # 1. 내부의 값 W, H 중 큰값 중에 가장 큰값을 구한다.
     # 2. 내부의 값 W, H 중 작은값 중에 가장 큰값을 구한다.
     # 그 둘을 곱하여 준다. 무지막지하게 신박햇다.
