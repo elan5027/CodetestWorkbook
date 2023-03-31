@@ -261,4 +261,29 @@ def test12(s):
 test12_dumy01 = "baabaa"
 test12_dumy02 = "cdcd"
 
-test12(test12_dumy01)
+#test12(test12_dumy01)
+
+# def test13(t, p):
+#     answer = 0
+#     for i in range(0,len(t)):
+#         if len(t[i:i+len(p)]) == len(p):
+#             if int(t[i:i+len(p)]) <= int(p):
+#                 answer += 1
+#                 print((t[i:i+len(p)]))
+#     return answer
+def test13(t, p):
+    return len([i for i in range(0,len(t)) if len(t[i:i+len(p)]) == len(p) and int(t[i:i+len(p)]) <= int(p)])
+#test13("3141592","271")
+
+
+def test001(num):
+    index = int(len(num)/2)
+    if len(num) % 2 == 0:
+        print(num[index-1:index+1])
+    else :
+        print(num[index])
+
+def middle_string(s):
+    return s[(len(s)-1)//2:len(s)//2+1]
+
+print(middle_string("12345"))
