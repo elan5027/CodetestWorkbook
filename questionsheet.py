@@ -1,3 +1,4 @@
+import numpy as np
 import random
 
 
@@ -319,8 +320,423 @@ def question22(keyinput, board):
 
         elif 'down' == key and - max_y != my_board[1]:
             my_board[1] -= 1
-            
+
     return my_board
 
 
-print(question22(["left", "right", "up", "right", "right"],	[11, 11]))
+# print(question22(["left", "right", "up", "right", "right"],	[11, 11]))
+
+def question23(numbers):
+    answer = ''
+    doc = {'zero': '0', 'one': '1', 'two': '2', 'three': '3', 'four': '4',
+           'five': '5', 'six': '6', 'seven': '7', 'eight': '8', 'nine': '9'}
+    start = 0
+    end = 0
+    for i in range(0, len(numbers)+1):
+        if numbers[start:i] in doc:
+            end = i
+            answer += doc[numbers[start:end]]
+            start = i
+    return int(answer)
+
+
+# print(question23("onetwothreefourfivesixseveneightnine"))
+
+def question23(lines):
+    answer = 0
+    tmp = []
+    for i in lines:
+        for j in range(i[1]-i[0]):
+            tmp.append(i[0]+j)
+    tmp2 = []
+    # 결과값에 answer 안에 속해있는 2개이상 중복된 값의 갯수 찾기
+    for x in set(tmp):
+        if tmp.count(x) >= 2:
+            tmp2.append(x)
+    return len(tmp2)
+
+
+def question23_type02(lines):
+    answer = 0
+    tmp = []
+    for i in lines:
+        for j in range(i[1]-i[0]):
+            tmp.append(i[0]+j)
+
+    answer = len([x for x in set(tmp) if tmp.count(x) >= 2])
+    # 결과값에 answer 안에 속해있는 2개이상 중복된 값의 갯수 찾기
+    return answer
+
+# 선분 3개 평행 3개의 시작과 끝좌표
+# [[start, end], [start, end], [start, end]]
+
+# 2개 이상의 선분이 겹치는 부분의 길이를 반환.
+
+# 겹치는 부분을 판단 해야함. start 시작부  제일 큰놈
+
+
+# print(question23([[0, 5], [3, 9], [1, 10]]))
+
+def question24(quiz):
+    answer = []
+    for q in quiz:
+        tmp = q.split(' ')
+        if tmp[1] == '-':
+            if (int(tmp[0])-int(tmp[2])) == int(tmp[4]):
+                answer.append('O')
+            else:
+                answer.append('X')
+        elif tmp[1] == '+':
+            if (int(tmp[0])+int(tmp[2])) == int(tmp[4]):
+                answer.append('O')
+            else:
+                answer.append('X')
+    return answer
+
+
+def question24_type02(quiz):
+    total = []
+    for q in quiz:
+        question, answer = q.split(' = ')
+        x, op, z = question.split()
+        if op == '+':
+            result = 'O' if int(x) + int(z) == int(answer) else 'X'
+            total.append(result)
+        elif op == '-':
+            result = 'O' if int(x) - int(z) == int(answer) else 'X'
+            total.append(result)
+
+    return total
+
+
+# print(question24(["3 - 4 = -3", "5 + 6 = 11"]))
+
+def question25(board):
+    board = np.array(board)
+    rows, cols = np.where(board == 1)
+
+    for r, c in zip(rows, cols):
+        if r-1 >= 0 and c-1 >= 0:
+            board[r-1:r+2, c-1:c+2] = 1
+        if c-1 < 0:
+            board[r-1:r+2, c:c+2] = 1
+
+    return len(board[board == 0])
+
+
+def question25_type02(board):
+    answer = 0
+    bomb = []
+
+    # 보드 공간 좌우 1칸씩 총 2칸 늘린 공간 만들기
+    boardplus = [[""]*(len(board)+2) for i in range(len(board)+2)]
+
+    for column in range(len(boardplus)):  # 세로값
+        for row in range(len(boardplus)):  # 가로값
+            if 1 <= column <= len(board) and 1 <= row <= len(board):
+                boardplus[column][row] = board[column-1][row-1]
+            else:
+                boardplus[column][row] = 2
+
+            if boardplus[column][row] == 1:
+                bomb.append([column, row])
+    # 기존에 값 복사 붙여넣기하고 추가된 구역은 2로 채워넣기.
+    # 붙여넣은 값중에 진짜 폭탄이 있던 1의 위치를 x에 기억시키기.
+    bomblen = (len(bomb))  # 폭탄의 갯수저장.
+    for column in range(len(boardplus)):
+        for row in range(len(boardplus)):
+            if 1 <= column <= len(board) and 1 <= row <= len(board):
+                for i in range(0, bomblen):
+                    if bomb[i] == [column, row]:
+                        for num in range(-1, 2):
+                            boardplus[column+num][row+num] = 1
+                            boardplus[column+num][row] = 1
+                            boardplus[column][row+num] = 1
+                            boardplus[column-num][row+num] = 1
+            else:
+                boardplus[column][row] = 2
+    for i in boardplus:
+        for j in range(0, len(boardplus)):
+            if i[j] == 0:
+                answer += 1
+    return answer
+
+
+def question25_type03(board):
+    answer = 0
+    bomb = []
+
+    for i, boad in enumerate(board):
+        for j in range(0, len(board)):
+            if (boad[j] == 1):
+                bomb.append([i, j])
+
+    bomblen = (len(bomb))  # 폭탄의 갯수저장.
+    for column in range(len(board)):
+        for row in range(len(board)):
+            for i in range(0, bomblen):
+                if bomb[i] == [column, row]:
+                    for num in range(-1, 2):
+                        numCol = (column+num) if (column +
+                                                  num) >= 0 and (column+num) < len(board) else column
+                        numRow = (row+num) if (row+num) >= 0 and (row +
+                                                                  num) < len(board) else row
+                        onumCol = (column-num) if (column -
+                                                   num) >= 0 and (column-num) < len(board)else column
+                        board[numCol][row] = 2  # 위아래
+                        board[numCol][numRow] = 3  # 좌상 우하
+                        board[column][numRow] = 4  # 좌우
+                        board[onumCol][numRow] = 5  # 좌하 우상
+
+    for i in board:
+        for j in range(0, len(board)):
+            if (i[j] == 0):
+                answer += 1
+    return answer
+
+
+# print(question25_type03([[0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [
+#      0, 0, 0, 0, 0], [0, 0, 1, 0, 0], [0, 0, 0, 0, 0]]))
+
+
+def question26(dots):
+    arr = []
+    answer = 0
+    for i in range(0, 3):
+        for j in range(1+i, 4):
+            x = dots[i][0]-dots[j][0]
+            y = dots[i][1]-dots[j][1]
+            arr.append(y/x)
+
+    # test2 = set(arr)
+    # if len(test2) == len(arr):
+    #     answer = 0
+    # else:
+    #     answer = 1
+    # return answer
+
+# 테스트 케이스 12~17에러 발생.
+# 원인 = 문제를 잘못 해석함
+# 모든 케이스를 비교하고 그중에서 찾는 것으로 생각햇음 [ 6개의 케이스를 종류별로 대입비교 ]
+# 6개의 케이스를 1:1 비교로 총 3가지만 비교하면 해결되는 문제. 해당 이유로 하단의 코드로 수정
+
+    for i in range(0, 3):
+        if arr[i] == arr[5-i]:
+            answer = 1
+            break
+        else:
+            answer = 0
+    return answer
+
+
+# print(question26([[1, 4], [9, 2], [3, 8], [11, 6]]))
+
+
+# 나중에 sort 안쓰고 재도전
+def question27(strings, n):
+    strings.sort()
+    answer = []
+    copy_strings = []
+    for i in range(0, len(strings)):
+        copy_strings.append(strings[i][n] + strings[i])
+    copy_strings.sort()
+
+    for i, string in enumerate(copy_strings):
+        print(i, string[1:])
+        answer.append(string[1:])
+    return answer
+
+
+dumy01 = [["sun", "bed", "car"], 1]
+dumy02 = [["abce", "abcd", "cdx"], 2]
+# print(question27(*dumy02))
+
+
+def question28(n, arr1, arr2):
+    answer = 0
+    result = []
+    for i in range(0, len(arr1)):
+        result.append(bin(arr1[i] | arr2[i])[2:])
+
+    for i in range(len(result)):
+        if len(result[i]) < n:
+            result[i] = '0' * (n - len(result[i])) + result[i]
+
+        result[i] = result[i].replace('1', '#')
+        result[i] = result[i].replace('0', ' ')
+
+    return result
+
+
+# print(question28(6, [46, 33, 33, 22, 31, 50], [27, 56, 19, 14, 14, 10]))
+
+def question29(phone_number):
+    answer = ''
+#    answer = "".join("*" for x in range(0, len(phone_number))
+#                     if x < (len(phone_number)-4) else phone_number[x])
+
+    for i in range(0, len(phone_number)):
+        if i < len(phone_number)-4:
+            answer += '*'
+        else:
+            answer += phone_number[i]
+
+    return answer
+
+
+# print(question29("01033334444"))
+
+def question30(a, b):
+    answer = 0
+
+    # Type 1
+    # for i in range(min(a,b), max(a,b)+1):
+    #     answer += i
+    # return answer
+
+    # Type 2
+    return (abs(a-b)+1) * (a+b)//2
+
+
+# print(question30(3, 5))
+
+
+def question31(s):
+
+    return True if s.isdigit() and len(s) in [4, 6] else False
+
+
+# print(question31("a234"))
+
+def question32(numbers):
+    return sum(range(10)) - sum(numbers)
+
+
+def question33(x, n):
+    answer = []
+    for xn in range(1, n+1):
+        answer.append((x*xn))
+
+    return answer
+
+
+def question34(n):
+    # str_x = str(n)
+    # test = 0
+    # for x1 in str_x:
+    #     test += int(x1)
+    # return n % test == 0
+    return n % sum(int(x) for x in str(n)) == 0
+
+
+# print(question34(11))
+
+
+def question35(arr, divisor):
+    # answer = []
+
+    # for ar in arr:
+    #     if ar % divisor == 0:
+    #         answer.append(ar)
+    # if len(answer) == 0:
+    #     answer.append(-1)
+    # answer.sort()
+    # return answer
+
+    return sorted([n for n in arr if n % divisor == 0]) or [-1]
+
+
+# print(question35([3, 2, 6], 10))
+
+def question36(arr1, arr2):
+
+    answer = []
+    for i, j in zip(arr1, arr2):
+        result = []
+        for z, x in zip(i, j):
+            result.append(z+x)
+        answer.append(result)
+
+    # Tpye2
+    # answer = [[z+x for z,x in zip(i,j)] for i,j in zip(arr1,arr2)]
+    return answer
+
+
+# print(question36([[1, 2], [2, 3]], [[3, 4], [5, 6]]))
+
+
+def question37(array, commands):
+    answer = []
+    # Commands[0] Start_index  : Index-1
+    # Commands[1] End_index : Index
+    # Commands[2] Return_index : index-1
+
+    for com in commands:
+        temp = sorted(array[com[0]-1:com[1]])
+        answer.append(temp[com[2]-1])
+    return answer
+
+
+# print(question37([1, 5, 2, 6, 3, 7, 4], [[2, 5, 3], [4, 4, 1], [1, 7, 3]]))
+
+
+def question38(s):
+    number_dict = {'zero': '0', 'one': '1', 'two': '2', 'three': '3', 'four': '4',
+                   'five': '5', 'six': '6', 'seven': '7', 'eight': '8', 'nine': '9'}
+    for key, value in number_dict.items():
+        s = s.replace(key, value)
+    answer = int(s)
+    return answer
+
+
+# print(question38("2three45sixseven"))
+
+
+def question39(num):
+    answer = num
+    cnt = 0
+    while True:
+        if answer % 2 == 0:
+            answer = answer / 2
+            cnt += 1
+            if answer == 1:
+                break
+        elif answer == 1:
+            break
+        else:
+            answer = answer * 3 + 1
+            cnt += 1
+        if answer == 1:
+            break
+
+    if cnt >= 500:
+        cnt = -1
+    return cnt
+
+# print(question39(16))
+
+
+def question40(price, money, count):
+
+    # count 증가할수록 price 곱적용
+    max_count = (count+1)*count//2*price
+    return max_count-money if (max_count-money > 0) else 0
+
+    return max(0, (count+1)*count//2*price-money)
+
+
+#print(question40(3, 20, 4))
+
+
+def question41(n):
+    answer = 0
+    return answer
+
+def question42(n):
+    answer = ''
+    while n > 0:
+        n, mod = divmod(n, 3)
+        answer += str(mod)
+    return int(answer, 3)
+
+print(question42(45))
