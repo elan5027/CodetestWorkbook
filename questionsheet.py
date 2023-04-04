@@ -100,7 +100,8 @@ def question07(dot):
         return 4 if x > 0 else 2
 
 
-# print(question07([2,4]))
+# print(question07([2, 4]))
+
 
 def question08(numbers):
     numbers.sort()
@@ -739,6 +740,8 @@ def gcd(a, b):
 
 # 생각해낸 최대 함수
 # 유클리드 호제법을 이용한 작성.
+# 왜이렇게 쓰이는지 알려면 수학공식 봐야되고
+#
 # A=0 이면 GCD(0,B)=B  == GCD(A,B)=B
 # B=0 이면 GCD(A,0)=A  == GCD(A,B)=A
 # A를 A = B*Q+R
@@ -788,7 +791,7 @@ def question42(n):
 # 에라토스테네스의 체 간결 구현코드 참고.
 # 효율성 차이 미쳣고.... 3000ms vs 300ms
 def solution(n):
-    num = set(range(2, n+1))
+    num = set(range(2, n+1))  # 중복값 다제거.
     # 해당부분을 굳이 n+1로 잡을 필요가없다. **0.5 또는 //2 를 통해 절반으로 감소시켜도 된다.
     for i in range(2, int(n**0.5)+1):
         if i in num:
@@ -800,6 +803,7 @@ def solution(n):
 # n+1 한 값 까지의 범위를 가질것이다.
 # i 만큼씩 떨어진 값을 만들꺼다. 즉
 # set(range(4, 11, 2) ) 은 4, 6, 8, 10 을 만들고 해당 값을 num에서 제거한다.
+
 # 최초의 num에는 2,3,4,5,6,7,8,9,10 이라는 값이 들어간다.
 # 1회 반복시 num에는 2,3,5,7,9  남는다.
 # 2회 반복시 set(range(6, 11, 3))은 6, 9 라는 값을 만들고 해당 값을 num에서 제거한다.
@@ -997,9 +1001,12 @@ def is_prime_number(n):
 def is_prime_number2(n):
     # 2부터 n까지의 모든 수에 대하여 소수 판별
     array = [True for i in range(n+1)]  # 처음엔 모든 수가 소수(True)인 것으로 초기화(0과 1은 제외)
-
+    # 수는 모두다 True -값이아니면.
+    # [False, 2, 3, False,
+    # [2,3,5,7,9]
     # 에라토스테네스의 체
     for i in range(2, int(n**0.5) + 1):  # 2부터 n의 제곱근까지의 모든 수를 확인하며
+
         if array[i] == True:  # i가 소수인 경우(남은 수인 경우)
             # i를 제외한 i의 모든 배수를 지우기
             j = 2
@@ -1016,17 +1023,17 @@ def is_prime_number2(n):
 def question50(nums):
     from itertools import combinations as cb
     answer = 0
-    # frime = is_prime_number2(2000)
-    # for c in cb(nums, 3):
-    #     if sum(c) in frime:
-    #         answer += 1
+    frime = is_prime_number2(2000)
+    for c in cb(nums, 3):
+        if sum(c) in frime:
+            answer += 1
 
-    for i, _num in enumerate(nums):
-        for j in range(i+1, len(nums)):
-            for k in range(j+1, len(nums)):
-                num = _num+nums[j]+nums[k]
-                if is_prime_number(num):
-                    answer += 1
+    # for i, _num in enumerate(nums):
+    #     for j in range(i+1, len(nums)):
+    #         for k in range(j+1, len(nums)):
+    #             num = _num+nums[j]+nums[k]
+    #             if is_prime_number(num):
+    #                 answer += 1
 
     # for c in cb(nums, 3):
     #     if is_prime_number(sum(c)):
@@ -1035,7 +1042,7 @@ def question50(nums):
     return answer
 
 
-# print(question50([1, 2, 3, 4]))
+print(question50([1, 2, 3, 4]))
 
 
 def question51(participant, completion):
@@ -1061,3 +1068,66 @@ def question51(participant, completion):
 
 # print(question51(["mislav", "stanko", "mislav", "ana"],
 #      ["stanko", "ana", "mislav"]))
+
+
+def question52(arr1, arr2):
+    arr1 = np.array(arr1)
+    arr2 = np.array(arr2)
+    result = np.dot(arr1, arr2)
+    return result.tolist()
+
+# 넘파이 안쓰고 풀기 난이도 미쳣다.
+
+
+def question52_type01(arr1, arr2):
+    result = []
+
+    for a1_row in arr1:
+        row_result = []
+        for a2_col in zip(*arr2):
+            element_result = sum(a*b for a, b in zip(a1_row, a2_col))
+            row_result.append(element_result)
+        result.append(row_result)
+    return result
+
+
+# print(question52_type01([[1, 4], [3, 2], [4, 1]], [[3, 1], [2, 1]]))
+
+
+def question53(new_id):
+    import re
+    new_id = str.lower(new_id)
+    new_id = re.sub('[^0-9a-z\-\_\.]', '', new_id)
+    # 처음 사용된 ^는 제외된것을 필터하겟다
+    # [^ ] 괄호에 묶인경우는 제외된것 즉 Not '^x 는 문자의 시작부분 판단
+    # 즉 ^0-9a-zㄱ-힗\-\_\. 이 부분은
+    # 해당문자열에서는 0-9 (숫자) a-z (소문자) -,_,.(특수문자 3개)만을 허용하겟다.
+    new_id = re.sub('[\^]', '', new_id)
+    # 위 부분에서 사용된 ^가 필터가 되지않아 별도로 필터
+    new_id = re.sub('\.{2,}', '.', new_id)
+    # \. 문자가 2번이상 반복되면 필터하겟다 .으로
+    # {2}는 2번 반복되면, {2,4} 2~4번반복되면 {2,} 2번이상 반복되면
+    new_id = re.sub('^\.|\.$', '', new_id)
+    # 시작이 .
+    # | (or 또는)
+    # . 으로 끝나면 빈값으로 바꾼다.
+
+    if not new_id:
+        new_id = 'a'
+    # 비어있으면 a삽입
+    if len(new_id) > 15:
+        new_id = re.findall('.{1,15}', new_id)[0]
+    # 문자열의 길이가 16 이상이면 findall() 1부터 15번째 까지 가져온다.
+    # .x 는 임의의 문자 자릿수 표현 즉 어떤 문자던 1번부터 15번까지 가져온다는 의미.
+    # 잘라낸 숫자는 리스트로 담기기때문에 15개가 담긴 0번 인덱스 가져온다.
+    new_id = re.sub('^\.|\.$', '', new_id)
+    # ^x 문자열의 시작은 x로 시작된다면
+    # 해당에서 ^\. 은 문자열의 시작이 .이라면
+    # x$ 문자열의 종료가 x라면
+    if len(new_id) <= 2:
+        new_id = new_id + new_id[-1] * (3 - len(new_id))
+    #문자열의 길이가 2이하인 경우에는 현재 문자열의 끝자리를 문자열의 길이가 3이 될만큼 반복하여 더해준다.
+    return new_id
+
+
+print(question53("asdasdasdasdas.a"))
