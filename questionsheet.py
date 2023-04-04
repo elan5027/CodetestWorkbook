@@ -1,3 +1,4 @@
+import math
 import numpy as np
 import random
 
@@ -725,12 +726,47 @@ def question40(price, money, count):
     return max(0, (count+1)*count//2*price-money)
 
 
-#print(question40(3, 20, 4))
+# print(question40(3, 20, 4))
+
+# 최대공약수와 최소공배수
+def gcd(a, b):
+    while b != 0:
+        r = a % b
+        a = b
+        b = r
+    return a
 
 
-def question41(n):
-    answer = 0
-    return answer
+# 생각해낸 최대 함수
+# 유클리드 호제법을 이용한 작성.
+# A=0 이면 GCD(0,B)=B  == GCD(A,B)=B
+# B=0 이면 GCD(A,0)=A  == GCD(A,B)=A
+# A를 A = B*Q+R
+# GCD(A, B) = GCD(B, R)
+#
+# def gcd(a, b):
+#     while b != 0:
+#         r = a % b
+#         a = b
+#         b = r
+#     return a
+# B가 0일때까지 돌리며 B가 0이면 A,B의 최대공약수는 A가된다.
+# 이를 축약하면 아래의 코드가 된다.
+#
+# def gcd(a, b):
+#     while b != 0:
+#         a, b = b, a % b
+#     return a
+# 해당 방법을 재귀를 통한 축약하면 아래의 모양이 된다.
+# 아래의 모양으로 만들었다.
+# https://ko.khanacademy.org/computing/computer-science/cryptography/modarithmetic/a/the-euclidean-algorithm
+def question41(n, m):
+    def gcd(a, b):
+        return gcd(b, a % b) if b else a
+    return [gcd(n, m), n * m // gcd(n, m)]
+
+# print(question41(7, 14))
+
 
 def question42(n):
     answer = ''
@@ -739,4 +775,263 @@ def question42(n):
         answer += str(mod)
     return int(answer, 3)
 
-print(question42(45))
+
+# print(question42(45))
+
+
+# 에라토스테네스의 체 알고리즘은
+# 1) 2부터 n까지의 모든 자연수 나열
+# 2) 남은 수 중 처리하지 않은 가장 작은 수 i 탐색
+# 3) 남은 수 중에서 i의 배수 제거(i 제외)
+# 4) 2~3 과정 반복
+# 의 과정으로 전개됩니다.
+# 에라토스테네스의 체 간결 구현코드 참고.
+# 효율성 차이 미쳣고.... 3000ms vs 300ms
+def solution(n):
+    num = set(range(2, n+1))
+    # 해당부분을 굳이 n+1로 잡을 필요가없다. **0.5 또는 //2 를 통해 절반으로 감소시켜도 된다.
+    for i in range(2, int(n**0.5)+1):
+        if i in num:
+            num -= set(range(2*i, n+1, i))
+    return len(num)
+
+# 미친 개똑똑하다.
+# range( 2*i  i값의 *2한 값 부터.
+# n+1 한 값 까지의 범위를 가질것이다.
+# i 만큼씩 떨어진 값을 만들꺼다. 즉
+# set(range(4, 11, 2) ) 은 4, 6, 8, 10 을 만들고 해당 값을 num에서 제거한다.
+# 최초의 num에는 2,3,4,5,6,7,8,9,10 이라는 값이 들어간다.
+# 1회 반복시 num에는 2,3,5,7,9  남는다.
+# 2회 반복시 set(range(6, 11, 3))은 6, 9 라는 값을 만들고 해당 값을 num에서 제거한다.
+# 즉 2회 반복시 2,3,5,7 남는다
+# 쭉 반복하여 값을 제거한다.
+# 코드를 쭉 보았을대 반복문의 최대값을 어짜피 *2를 하여 절반으로 줄어드는데 n+1회까지 반복할 이유가 없는것 같다.
+# 해당 부분을 (n+1)//2 로 나누어 테스트코드를 돌려보았는데 정상 작동하였다.
+
+
+# print(solution(10))
+
+
+def question43(n):
+    # answer = 0
+
+    # for i in range(2, n+1):
+    #     is_prime = True
+    #     for j in range(2, int(i**0.5)+1):
+    #         if i % j == 0:
+    #             is_prime = False
+    #             break
+    #     if is_prime:
+    #         answer += 1
+    # return answer
+
+    def count_primes(n): return sum(
+        all(n % i for i in range(2, int(n ** 0.5) + 1)) for n in range(2, n + 1))
+    return count_primes(n)
+
+# 예산 문제.
+
+
+def question44(d, budget):
+    answer = 0
+    d.sort()
+    for i in range(0, len(d)):
+        if budget >= d[i]:
+            answer += 1
+            budget -= d[i]
+    return answer
+
+
+# print(question44([9, 2, 1, 3], 10))
+
+def question45(food):
+    answer = ''
+    for i in range(1, len(food)):
+        for j in range(food[i]//2):
+            answer += str(i)
+    answer += '0'
+    for i in range(1, len(food)):
+        for j in range(food[len(food)-i]//2):
+            answer += str(len(food)-i)
+
+    return answer
+
+
+# print(question45([1, 3, 4, 6]))
+
+
+def question46(k, m, score):
+    answer = 0
+    score.sort(reverse=True)
+    for i in range(0, len(score), m):
+        if len(score[i:i+m]) >= m:
+            answer += (min(score[i:i+m])*m)
+
+    return answer
+
+
+# print(question46(3, 4, [1, 2, 3, 1, 2, 3, 1]))
+
+
+def question47(number):
+    answer = 0
+    print(number)
+    for i, num in enumerate(number):
+        for j in range(i+1, len(number)):
+            for k in range(j+1, len(number)):
+                print(number[i], number[j], number[k])
+                if (num+number[j]+number[k]) == 0:
+                    answer += 1
+                else:
+                    continue
+    return answer
+
+
+# print(question47([-3, -2, -1, 0, 1, 2, 3]))
+
+
+def question48(numbers, hand):
+    phon = {1: (0, 0), 2: (0, 1), 3: (0, 2),
+            4: (1, 0), 5: (1, 1), 6: (1, 2),
+            7: (2, 0), 8: (2, 1), 9: (2, 2),
+            '*': (3, 0), 0: (3, 1), '#': (3, 2)}
+    left = [1, 4, 7]
+    right = [3, 6, 9]
+    answer = ""
+    curr_left = '*'
+    curr_right = '#'
+    current = 0
+    for num in numbers:
+        if num in left:
+            curr_left = num
+            answer += "L"
+        elif num in right:
+            curr_right = num
+            answer += "R"
+        else:
+            current = phon[num]
+            l_hand = phon[curr_left]
+            r_hand = phon[curr_right]
+            l_value = abs(l_hand[0]-current[0]) + abs(l_hand[1]-current[1])
+            r_value = abs(r_hand[0]-current[0]) + abs(r_hand[1]-current[1])
+
+            if l_value > r_value:
+                answer += "R"
+                curr_right = num
+            elif l_value == r_value:
+                if hand == "left":
+                    answer += "L"
+                    curr_left = num
+                else:
+                    answer += "R"
+                    curr_right = num
+            else:
+                answer += "L"
+                curr_left = num
+    return answer
+
+# print(question48([1, 3, 4, 5, 8, 2, 1, 4, 5, 9, 5],"right"))
+# print(question48([7, 0, 8, 2, 8, 3, 1, 5, 7, 6, 2],"left"))
+
+
+def question49(survey, choices):
+
+    # answer = ''
+    # doc = {"RT": 0, "CF": 0, "JM": 0, "AN": 0}
+    # for key, value in zip(survey, choices):
+    #     if key not in doc.keys():
+    #         key = key[::-1]
+    #         doc[key] -= value-4
+    #     else:
+    #         doc[key] += value-4
+
+    # for key in doc.keys():
+    #     if doc[key] >= 0:
+    #         answer += key[1]
+    #     elif doc[key] < 0:
+    #         answer += key[0]
+    # return answer
+
+    choices_doc = {
+        1: 3,
+        2: 2,
+        3: 1,
+        4: 0,
+        5: -1,
+        6: -2,
+        7: -3
+    }
+    answer = ''
+    doc = {
+        "RT": 0,
+        "CF": 0,
+        "JM": 0,
+        "AN": 0,
+    }
+    for i in range(0, len(survey)):
+        if survey[i] not in doc.keys():
+            survey[i] = survey[i][::-1]
+            doc[survey[i]] += -choices_doc[choices[i]]
+        else:
+            doc[survey[i]] += choices_doc[choices[i]]
+
+    print(doc)
+    for key in doc.keys():
+        if doc[key] < 0:
+            answer += key[1]
+        elif doc[key] >= 0:
+            answer += key[0]
+    return answer
+
+
+# print(question49(["AN", "CF", "MJ", "RT", "NA"], [5, 3, 2, 7, 5]))
+
+
+def is_prime_number(n):
+    for i in range(2, int(math.sqrt(n)+1)):
+        if n % i == 0:
+            return False
+    return True
+
+
+def is_prime_number2(n):
+    # 2부터 n까지의 모든 수에 대하여 소수 판별
+    array = [True for i in range(n+1)]  # 처음엔 모든 수가 소수(True)인 것으로 초기화(0과 1은 제외)
+
+    # 에라토스테네스의 체
+    for i in range(2, int(n**0.5) + 1):  # 2부터 n의 제곱근까지의 모든 수를 확인하며
+        if array[i] == True:  # i가 소수인 경우(남은 수인 경우)
+            # i를 제외한 i의 모든 배수를 지우기
+            j = 2
+            while i * j <= n:
+                array[i * j] = False
+                j += 1
+
+    return [i for i in range(2, n+1) if array[i]]
+# cominations 함수 배우기.
+# from itertools import combinations as cb
+# 파이썬 for else 이건 몰랏다 ㄹㅇ.
+
+
+def question50(nums):
+    from itertools import combinations as cb
+    answer = 0
+    frime = is_prime_number2(2000)
+    for c in cb(nums, 3):
+        if sum(c) in frime:
+            answer += 1
+    # for i, _num in enumerate(nums):
+    #     for j in range(i+1, len(nums)):
+    #         for k in range(j+1, len(nums)):
+    #             num = _num+nums[j]+nums[k]
+    #             if is_prime_number(num):
+    #                 answer += 1
+
+    # for c in cb(nums, 3):
+    #     if is_prime_number(sum(c)):
+    #         answer += 1
+
+    return answer
+
+
+print(question50([1, 2, 3, 4]))
