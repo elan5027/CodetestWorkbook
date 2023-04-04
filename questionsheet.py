@@ -1016,16 +1016,17 @@ def is_prime_number2(n):
 def question50(nums):
     from itertools import combinations as cb
     answer = 0
-    frime = is_prime_number2(2000)
-    for c in cb(nums, 3):
-        if sum(c) in frime:
-            answer += 1
-    # for i, _num in enumerate(nums):
-    #     for j in range(i+1, len(nums)):
-    #         for k in range(j+1, len(nums)):
-    #             num = _num+nums[j]+nums[k]
-    #             if is_prime_number(num):
-    #                 answer += 1
+    # frime = is_prime_number2(2000)
+    # for c in cb(nums, 3):
+    #     if sum(c) in frime:
+    #         answer += 1
+
+    for i, _num in enumerate(nums):
+        for j in range(i+1, len(nums)):
+            for k in range(j+1, len(nums)):
+                num = _num+nums[j]+nums[k]
+                if is_prime_number(num):
+                    answer += 1
 
     # for c in cb(nums, 3):
     #     if is_prime_number(sum(c)):
@@ -1034,4 +1035,29 @@ def question50(nums):
     return answer
 
 
-print(question50([1, 2, 3, 4]))
+# print(question50([1, 2, 3, 4]))
+
+
+def question51(participant, completion):
+    # answer = ''
+
+    # for comp in completion:
+    #     if comp in participant:
+    #         participant.remove(comp)
+
+    # return ''.join(participant)
+    # 효율성테스트 통과를 위해 정렬한 이후 리스트내부를 검사하지 않고
+    # 반복을 통해서 인덱스를 통한 검사로 변경하였다.
+    # completion의 길이는 participant의 길이보다 1 작다는 구문상
+    # 통과하지 못하는 사람은 1명이라는 결론을 가지고 문재를 재작성하였다.
+
+    participant.sort()
+    completion.sort()
+    for i in range(len(completion)):
+        if participant[i] != completion[i]:
+            return participant[i]
+    return participant[-1]
+
+
+# print(question51(["mislav", "stanko", "mislav", "ana"],
+#      ["stanko", "ana", "mislav"]))
